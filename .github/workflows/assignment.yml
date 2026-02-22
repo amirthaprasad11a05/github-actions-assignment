@@ -1,31 +1,21 @@
-name: Assignment Cache
+name: Caching Assignment
 
-on:
-  workflow_dispatch:
-  push:
+on: push
 
 jobs:
-  test:
+  cache:
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        
-      - name: prime-cache-27f7809
-        id: cache
-        uses: actions/cache@v4
-        with:
-          key: cache-27f7809
-          path: .cache/
-          
-      - name: Show result
-        run: echo "Cache hit: ${{ steps.cache.outputs.cache-hit }}"
-        
-      - name: Create files
-        run: |
-          mkdir -p .cache
-          echo "Assignment complete" > .cache/demo.txt
-          
-      - name: Hello
-        run: echo "Hello, world!"
+    - uses: actions/checkout@v4
+    
+    - name: prime-cache-27f7809
+      uses: actions/cache@v4
+      with:
+        key: cache-27f7809
+        path: ~/.demo-cache/
+    
+    - name: Cache info
+      run: echo "Cache setup complete"
+      
+    - name: Setup demo
+      run: mkdir -p ~/.demo-cache && echo "OK" > ~/.demo-cache/test.txt
