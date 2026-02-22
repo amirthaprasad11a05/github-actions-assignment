@@ -1,8 +1,8 @@
 name: Assignment Cache
 
 on:
-  workflow_dispatch:  # Keep your manual trigger
-  push:               # Auto-trigger on pushes too
+  workflow_dispatch:
+  push:
 
 jobs:
   cache-test:
@@ -12,21 +12,21 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
       
-    - name: prime-cache-27f7809  # REQUIRED exact name
-      id: cache-step             # For output access
-      uses: actions/cache@v4     # REQUIRED v4+
+    - name: prime-cache-27f7809
+      id: cache-step
+      uses: actions/cache@v4
       with:
-        key: cache-27f7809       # REQUIRED exact key
-        path: ~/.cache/assignment
+        key: cache-27f7809
+        path: cache-demo/  # Simple relative path - NO permission issues!
         
     - name: Show cache result
       run: echo "Cache hit: ${{ steps.cache-step.outputs.cache-hit }}"
       
-    - name: Populate cache
+    - name: Populate cache  # Create BEFORE cache step next time
       run: |
-        mkdir -p ~/.cache/assignment
-        echo "Assignment files here" > ~/.cache/assignment/demo.txt
+        mkdir -p cache-demo
+        echo "Assignment success: $(date)" > cache-demo/demo.txt
+        ls -la cache-demo/
         
     - name: Your original step
       run: echo "Hello, world!"
-
