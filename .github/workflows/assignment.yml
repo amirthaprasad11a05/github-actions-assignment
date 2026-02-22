@@ -1,11 +1,32 @@
-name: Assignment workflow
+name: Assignment Cache
 
 on:
-  workflow_dispatch: # manual trigger
+  workflow_dispatch:  # Keep your manual trigger
+  push:               # Auto-trigger on pushes too
 
 jobs:
-  test:
+  cache-test:
     runs-on: ubuntu-latest
+    
     steps:
-      - name: 24ds3000108@ds.study.iitm.ac.in
-        run: echo "Hello, world!"
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: prime-cache-27f7809  # REQUIRED exact name
+      id: cache-step             # For output access
+      uses: actions/cache@v4     # REQUIRED v4+
+      with:
+        key: cache-27f7809       # REQUIRED exact key
+        path: ~/.cache/assignment
+        
+    - name: Show cache result
+      run: echo "Cache hit: ${{ steps.cache-step.outputs.cache-hit }}"
+      
+    - name: Populate cache
+      run: |
+        mkdir -p ~/.cache/assignment
+        echo "Assignment files here" > ~/.cache/assignment/demo.txt
+        
+    - name: Your original step
+      run: echo "Hello, world!"
+
