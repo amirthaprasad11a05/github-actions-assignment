@@ -1,32 +1,27 @@
 name: Assignment Cache
 
-on:
-  workflow_dispatch:
-  push:
+on: [workflow_dispatch, push]
 
 jobs:
-  cache-test:
+  test:
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      
+    - uses: actions/checkout@v4
+    
     - name: prime-cache-27f7809
-      id: cache-step
+      id: mycache
       uses: actions/cache@v4
       with:
         key: cache-27f7809
-        path: cache-demo/  # Simple relative path - NO permission issues!
+        path: cache/
         
-    - name: Show cache result
-      run: echo "Cache hit: ${{ steps.cache-step.outputs.cache-hit }}"
+    - name: Cache status
+      run: echo "HIT: ${{ steps.mycache.outputs.cache-hit }}"
       
-    - name: Populate cache  # Create BEFORE cache step next time
+    - name: Populate  # ← HAD MISSING '-' HERE!
       run: |
-        mkdir -p cache-demo
-        echo "Assignment success: $(date)" > cache-demo/demo.txt
-        ls -la cache-demo/
+        mkdir -p cache
+        echo "✓ CACHED $(date)" > cache/ok.txt
         
-    - name: Your original step
+    - name: Done
       run: echo "Hello, world!"
