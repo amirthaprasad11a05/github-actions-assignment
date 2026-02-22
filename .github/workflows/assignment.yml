@@ -1,27 +1,31 @@
 name: Assignment Cache
 
-on: [workflow_dispatch, push]
+on:
+  workflow_dispatch:
+  push:
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
     
-    - name: prime-cache-27f7809
-      id: mycache
-      uses: actions/cache@v4
-      with:
-        key: cache-27f7809
-        path: cache/
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
         
-    - name: Cache status
-      run: echo "HIT: ${{ steps.mycache.outputs.cache-hit }}"
-      
-    - name: Populate  # ← HAD MISSING '-' HERE!
-      run: |
-        mkdir -p cache
-        echo "✓ CACHED $(date)" > cache/ok.txt
+      - name: prime-cache-27f7809
+        id: cache
+        uses: actions/cache@v4
+        with:
+          key: cache-27f7809
+          path: .cache/
+          
+      - name: Show result
+        run: echo "Cache hit: ${{ steps.cache.outputs.cache-hit }}"
         
-    - name: Done
-      run: echo "Hello, world!"
+      - name: Create files
+        run: |
+          mkdir -p .cache
+          echo "Assignment complete" > .cache/demo.txt
+          
+      - name: Hello
+        run: echo "Hello, world!"
